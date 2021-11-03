@@ -12,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'GAMBBAS'
 
-client = MongoClient('mongodb://15.165.205.32', 27017, username="test", password="test")
+client = MongoClient('mongodb://3.36.109.166', 27017, username="test", password="test")
 db = client.dbgambbas
 
 
