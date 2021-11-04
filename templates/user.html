@@ -59,7 +59,6 @@
                     if (response["result"] == "success") {
                         alert(response["msg"])
                         window.location.reload()
-
                     }
                 }
             });
@@ -72,7 +71,7 @@
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <img src="{{ url_for('static', filename='logo.png') }}">
+            <!-- <img src="{{ url_for('static', filename='logo.png') }}">   logo 이미지 주석처리  -->
             <strong class="is-sparta"
                     style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS - 감성에 빠진 스팟</strong>
         </a>
@@ -231,5 +230,11 @@
         </div>
     </section>
 {% endif %}
+
+<section class="postsection">
+    <div id="post-box" class="container">
+    </div>
+</section>
+
 </body>
 </html>
