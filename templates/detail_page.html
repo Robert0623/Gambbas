@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <!-- Webpage Title -->
+    <title>감.빠.스 상세페이지</title>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            showReview();
+        });
+
+        function makeReview() {
+            let author = $('#author').val()
+            let review = $('#bookReview').val()
+
+            $.ajax({
+                type: "POST",
+                url: "/review",
+                data: {author_give: author, review_give: review},
+                success: function (response) {
+                    alert(response["msg"]);
+                    window.location.reload();
+                }
+            })
+        }
+
+        function showReview() {
+            $.ajax({
+                type: "GET",
+                url: "/review",
+                data: {},
+                success: function (response) {
+                    let reviews = response['all_reviews']
+                    for (let i = 0; i < reviews.length; i++) {
+                        let author = reviews[i]['author']
+                        let review = reviews[i]['review']
+
+                        let temp_html = `<tr>
+                                                <td>${author}</td>
+                                                <td>${review}</td>
+                                            </tr>`
+                        $('#reviews-box').append(temp_html)
+                    }
+                }
+            })
+        }
+    </script>
+
+    <style type="text/css">
+        * {
+            font-family: "Do Hyeon", sans-serif;
+        }
+
+        h1,
+        h5 {
+            display: inline;
+        }
+
+        .info {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .review {
+            text-align: center;
+        }
+
+        .reviews {
+            margin-top: 100px;
+        }
+
+        .comment_box {
+            margin-top: 150px;
+        }
+
+        .comment_wrap {
+         display: inline-block;
+            background: green;
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1><b><span style="color: green;">감.빠.스 상세페이지</span></b></h1>
+    <p><img src="https://t1.daumcdn.net/liveboard/holapet/0e5f90af436e4c218343073164a5f657.JPG"
+            class="img-fluid" alt="Responsive image"></p>
+    <div class="info">
+
+        <!--'사진,제목,내용' 글작성페이지, 메인페이지와 SSR적용해야함. 아래는 예시-->
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">장소</span>
+            </div>
+            <input type="text" class="form-control" id="aaa">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">내용</span>
+            </div>
+            <textarea class="form-control" id="bbb"
+                      cols="30"
+                      rows="5" placeholder=""></textarea>
+        </div>
+
+
+        <div class="comment_box">
+            <h1>Comment</h1>
+            <p>댓글을 남겨주세요</p>
+
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">작성자</span>
+                </div>
+                <input type="text" class="form-control" id="author">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">코멘트</span>
+                </div>
+                <input type="text" class="form-control" id="bookReview">
+            </div>
+            </div>
+
+            <div class="review">
+                <button onclick="makeReview()" type="button" class="btn btn-primary">댓글 작성</button>
+
+        </div>
+    </div>
+
+    <div class="reviews">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">작성자</th>
+                <th scope="col">코멘트</th>
+            </tr>
+            </thead>
+            <tbody id="reviews-box">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+
+</html>
