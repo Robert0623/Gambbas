@@ -1,0 +1,42 @@
+
+body {
+    background-color: #054e15;
+    min-height: 100vh;
+}
+
+.section {
+    padding: 1rem 1.5rem;
+    max-width: 750px;
+    margin: auto;
+}
+
+.title {
+    font-weight: 800;
+    font-size: 5rem;
+    font-family: 'Gowun Batang', serif;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    font-family: 'Gowun Batang', serif;
+}
+
+.is-sparta {
+    color: #054e15 !important;
+}
+
+.button.is-sparta {
+    background-color: #054e15;
+    border-color: transparent;
+    color: #fff !important;
+}
+
+.button.is-sparta.is-outlined {
+    background-color: transparent;
+    border-color: #054e15;
+    color: #054e15 !important;
+}
+
+.help {
+    color: gray;
+}

@@ -1,7 +1,7 @@
 body {
-    background-color: #fcfcfc;
+    background-color: #ffffff;
     min-height: 100vh;
-		padding-top: 3.25rem;
+    padding-top: 3.25rem;
 }
 
 .section {
@@ -55,4 +55,24 @@ input::-webkit-calendar-picker-indicator {
 
 .card-body {
     height: 200px;
+}
+
+.card-text {
+    height: 80px;
+}
+
+.card-link {
+    margin-left: 240px;
+}
+
+
+.title {
+    font-weight: 800;
+    font-size: 5rem;
+    font-family: 'Gowun Batang', serif;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    font-family: 'Gowun Batang', serif;
 }

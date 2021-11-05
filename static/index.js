@@ -69,45 +69,6 @@ function num2str(count) {
     return count
 }
 
-function toggle_like(post_id, type) {
-    console.log(post_id, type)
-    let $a_like = $(`#${post_id} a[aria-label='${type}']`)
-    let $i_like = $a_like.find("i")
-    let class_s = {"heart": "fa-heart", "star": "fa-star", "like": "fa-thumbs-up"}
-    let class_o = {"heart": "fa-heart-o", "star": "fa-star-o", "like": "fa-thumbs-o-up"}
-    if ($i_like.hasClass(class_s[type])) {
-        $.ajax({
-            type: "POST",
-            url: "/update_like",
-            data: {
-                post_id_give: post_id,
-                type_give: type,
-                action_give: "unlike"
-            },
-            success: function (response) {
-                console.log("unlike")
-                $i_like.addClass(class_o[type]).removeClass(class_s[type])
-                $a_like.find("span.like-num").text(num2str(response["count"]))
-            }
-        })
-    } else {
-        $.ajax({
-            type: "POST",
-            url: "/update_like",
-            data: {
-                post_id_give: post_id,
-                type_give: type,
-                action_give: "like"
-            },
-            success: function (response) {
-                console.log("like")
-                $i_like.addClass(class_s[type]).removeClass(class_o[type])
-                $a_like.find("span.like-num").text(num2str(response["count"]))
-            }
-        })
-
-    }
-}
 
 function get_posts(username) {
     if (username == undefined) {
@@ -174,4 +135,10 @@ function deleteCard(post_id) {
             window.location.reload()
         }
     });
+}
+
+function logout() {
+    $.removeCookie('mytoken');
+    alert('로그아웃!')
+    window.location.href = '/login'
 }

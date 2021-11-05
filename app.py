@@ -14,8 +14,8 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'GAMBBAS'
 
-client = MongoClient('mongodb://13.124.68.55', 27017, username="test", password="test")
-db = client.dbgambbas_last
+client = MongoClient('mongodb://3.36.109.166', 27017, username="test", password="test")
+db = client.dbgambbas_last_2
 
 
 @app.route('/')
@@ -102,17 +102,21 @@ def posting():
     token_receive = request.cookies.get('mytoken')
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
+    # 확인 필요한 부분
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
     title_receive = request.form["title_give"]
     comment_receive = request.form["comment_give"]
     file = request.files["file_give"]
 
-    user_info = db.users.find_one({"username":payload["id"]})
+    user_info = db.users.find_one({"username": payload["id"]})
     nickname = user_info["nickname"]
     username = user_info["username"]
 
     extension = file.filename.split(".")[-1]
 
-    filename = f"file"
+    filename = f"file - {mytime}"
     save_to = f"static/img/{filename}.{extension}"
     file.save(save_to)
 
@@ -162,7 +166,7 @@ def delete_card():
         return jsonify({"msg": "삭제 권한이 없습니다."})
 
 
-#프로필 확인 / 수정용 - index.html > href="/user/{{ user_info.username }}"
+# 프로필 확인 / 수정용 - index.html > href="/user/{{ user_info.username }}"
 @app.route('/user/<username>')
 def user(username):
     # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
@@ -172,7 +176,9 @@ def user(username):
         status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
 
         user_info = db.users.find_one({"username": username}, {"_id": False})
-        return render_template('user.html', user_info=user_info, status=status)
+        posts = list(db.posts.find({}))
+
+        return render_template('user.html', user_info=user_info, posts=posts, status=status)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -183,19 +189,24 @@ def save_img():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+        today = datetime.now()
+        mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
         username = payload["id"]
         name_receive = request.form["name_give"]
         about_receive = request.form["about_give"]
         new_doc = {
-            "nickname": name_receive,       #profile_name > nickname 으로 통합 (전종민 2021-11-05)
+            "nickname": name_receive,  # profile_name > nickname 으로 통합 (전종민 2021-11-05)
             "profile_info": about_receive
         }
         if 'file_give' in request.files:
             file = request.files["file_give"]
             filename = secure_filename(file.filename)
             extension = filename.split(".")[-1]
+            filename = f"file - {mytime}"
             file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/"+file_path)
+            file.save("./static/" + file_path)
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})

@@ -44,32 +44,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-    <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 
     <!-- CSS -->
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='index.css') }}" rel="stylesheet">
 
-    <script>
-        // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
-        function logout() {
-            $.removeCookie('mytoken');
-            alert('로그아웃!')
-            window.location.href = '/login'
-        }
-    </script>
-
-    <style>
-        .title {
-            font-weight: 800;
-            font-size: 5rem;
-            font-family: 'Gowun Batang', serif;
-        }
-
-        .subtitle {
-            font-size: 1.5rem;
-            font-family: 'Gowun Batang', serif;
-        }
-    </style>
 </head>
 <body>
 <!-- header -->
@@ -115,7 +94,7 @@
             <div class="field">
                 <p class="control">
                     <input id="input-post" class="input is-rounded"
-                           placeholder="{{ user_info.nickname }}님이 아는 감.빠.스를 공유해주세요"
+                           placeholder="나만 감.빠.스를 공유해주세요"
                            onclick='$("#modal-post").addClass("is-active")'></p>
             </div>
         </div>
@@ -129,7 +108,7 @@
                         <article class="place">
                             <div class="media-content">
                                 <div class="level-left">
-                                    place
+                                    SPOT
                                 </div>
                                 <div class="field">
                                     <p class="control">
@@ -163,12 +142,12 @@
                         <article class="media">
                             <div class="media-content">
                                 <div class="level-left">
-                                    comment
+                                    COMMENT
                                 </div>
                                 <div class="field">
                                     <p class="control">
                             <textarea id="textarea-post" class="textarea"
-                                      placeholder="ex) 야경 맛집! ...etc"></textarea>
+                                      placeholder="ex) 야경 맛집! ...etc" maxlength="44"></textarea>
                                     </p>
                                 </div>
                                 <nav class="level is-mobile">
@@ -177,11 +156,11 @@
                                     </div>
                                     <div class="level-right">
                                         <div class="level-item">
-                                            <a class="button is-sparta" onclick="post()">posting</a>
+                                            <a class="button is-sparta" onclick="post()">UPLOAD</a>
                                         </div>
                                         <div class="level-item">
                                             <a class="button is-sparta is-outlined"
-                                               onclick='$("#modal-post").removeClass("is-active")'>cancel</a>
+                                               onclick='$("#modal-post").removeClass("is-active")'>CANCEL</a>
                                         </div>
                                     </div>
                                 </nav>
@@ -233,15 +212,9 @@
                              class="card-img-top embed-responsive-item" alt="Card image cap">
                     </div>
                     <div class="card-body">
-                        <div class="media-left">
-                            <figure class="image is-48x48">
-                                <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="Placeholder image">
-                            </figure>
-                        </div>
                         <h5 class="card-title">{{ post.title }}</h5>
                         <h5 class="card-subtitle mb-2 text-muted">@ {{ post.nickname }}</h5>
                         <p class="card-text">{{ post.comment }}</p>
-                        <a href="#" class="card-link">수정하기</a>
                         <a href="#" class="card-link" onclick="deleteCard('{{ post_id }}')">삭제하기</a>
                     </div>
                 </div>
