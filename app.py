@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 SECRET_KEY = 'GAMBBAS'
 
 client = MongoClient('mongodb://3.36.109.166', 27017, username="test", password="test")
-db = client.dbgambbas_last_2
+db = client.dbgambbas
 
 
 @app.route('/')
