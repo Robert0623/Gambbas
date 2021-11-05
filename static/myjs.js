@@ -1,18 +1,41 @@
 function post() {
-    let comment = $("#textarea-post").val()
-    let today = new Date().toISOString()
+    let file = $("#input-pic")[0].files[0];
+    let title = $("#post-title").val();
+    let comment = $("#textarea-post").val();
+
+    let form_data = new FormData();
+
+    form_data.append("file_give", file);
+    form_data.append("title_give", title);
+    form_data.append("comment_give", comment);
+
     $.ajax({
         type: "POST",
         url: "/posting",
-        data: {
-            comment_give: comment,
-            date_give: today
-        },
+        data: form_data,
+        cache: false,
+        contentType: false,
+        processData: false,
         success: function (response) {
+            alert(response["msg"]);
             $("#modal-post").removeClass("is-active")
             window.location.reload()
         }
-    })
+    });
+}
+
+function setThumbnail(value) {
+    let file = $("#input-pic").val().split("\\");
+    let file_name = file[file.length - 1];
+    $("#file-name").text(file_name);
+
+    if (value.files && value.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            $("#preview-image").attr("src", e.target.result);
+        }
+        reader.readAsDataURL((value.files[0]));
+    }
 }
 
 function time2str(date) {
@@ -86,6 +109,7 @@ function toggle_like(post_id, type) {
     }
 }
 
+/*
 function get_posts(username) {
     if (username == undefined) {
         username = ""
@@ -133,4 +157,22 @@ function get_posts(username) {
             }
         }
     })
+}*/
+
+
+/*삭제*/
+function deleteCard(post_id) {
+    let id_value = post_id;
+
+    $.ajax({
+        type: "DELETE",
+        url: "/deleteCard",
+        data: {
+            id_value_give: id_value
+        },
+        success: function (response) {
+            alert(response["msg"]);
+            window.location.reload()
+        }
+    });
 }

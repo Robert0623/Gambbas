@@ -1,8 +1,38 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+    />
+
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!-- Google Font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Webpage Title -->
-    <title>GAMBBAS - 감성에 빠진 스팟</title>
+    <title>GAMBBAS</title>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -10,56 +40,80 @@
 
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-
-    <!-- static/mystyle.css 불러오기 -->
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-    <!-- static/myjs.js 불러오기 -->
     <script src="{{ url_for('static', filename='myjs.js') }}"></script>
 
+    <!-- CSS -->
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
+
     <script>
-        // Post 불러오기
-        $(document).ready(function () {
-            get_posts()
-        })
+
 
         // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
-        //function logout(){
-        //  $.removeCookie('mytoken');
-        //  alert('로그아웃!')
-        //  window.location.href='/login'
-        //}
-    </script>
-</head>
+        function logout() {
+            $.removeCookie('mytoken');
+            alert('로그아웃!')
+            window.location.href = '/login'
+        }
 
-<body class="has-navbar-fixed-top">
+    </script>
+
+    <style>
+        .title {
+            font-weight: 800;
+            font-size: 5rem;
+            font-family: 'Gowun Batang', serif;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-family: 'Gowun Batang', serif;
+        }
+    </style>
+
+</head>
+<body>
+<!-- header -->
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            {#<img src="{{ url_for('static', filename='logo.png') }}">#}
+            <!-- <img src="{{ url_for('static', filename='logo.png') }}"> -->
             <strong class="is-sparta"
-                    style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS - 감성에 빠진 스팟</strong>
+                    style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS</strong>
         </a>
     </div>
 </nav>
-
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+        <h1 class="title is-sparta">감.빠.스</h1>
+        <h3 class="subtitle is-sparta">감성에 빠지는 SPOT</h3>
+    </div>
+</section>
+<!-- tab -->
+<div class="tabs is-right">
+    <ul>
+        <li class="is-active"><a>Home</a></li>
+        <li><a>{{ user_info.nickname }}</a></li>
+        <li><a onclick="logout()">Logout</a></li>
+    </ul>
+</div>
+<!-- posting input -->
 <section class="section">
     <article class="media">
         <figure class="media-left" style="align-self: center">
             <a class="image is-32x32" href="/user/{{ user_info.username }}">
-                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
-            </a>
+                <!-- <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+            --></a>
         </figure>
         <div class="media-content">
             <div class="field">
                 <p class="control">
-                    <input id="input-post" class="input is-rounded" placeholder="무슨 생각을 하고 계신가요?"
-                           onclick='$("#modal-post").addClass("is-active")'>
-                </p>
+                    <input id="input-post" class="input is-rounded"
+                           placeholder="{{ user_info.nickname }}님이 아는 감.빠.스를 공유해주세요"
+                           onclick='$("#modal-post").addClass("is-active")'></p>
             </div>
         </div>
     </article>
@@ -67,12 +121,178 @@
         <div class="modal-background" onclick='$("#modal-post").removeClass("is-active")'></div>
         <div class="modal-content">
             <div class="box">
-                <article class="media">
+                <div class="posting-box">
+                    <div class="box">
+                        <article class="place">
+                            <div class="media-content">
+                                <div class="level-left">
+                                    place
+                                </div>
+                                <div class="field">
+                                    <p class="control">
+                                        <input id="post-title" class="input is-normal" type="text"
+                                               placeholder="ex) 서울 남산타워, 부산 해운대, 전주 한옥마을 ...etc">
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                        <div class="my-img">
+                            <div id="image-container" class="image-container">
+                                <img id="preview-image"
+                                     src="https://dummyimage.com/500x400/fff/000.png&text=preview+image">
+                            </div>
+                            <div class="control is-expanded">
+                                <div class="file has-name">
+                                    <label class="file-label" style="width:100%">
+                                        <input id="input-pic" class="file-input" type="file" accept="image/*"
+                                               name="resume" onchange="setThumbnail(this)">
+                                        <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fa fa-upload"></i>
+                                            </span>
+                                            <span class="file-label">img</span>
+                                        </span>
+                                        <span id="file-name" class="file-name" style="width:100%;max-width:100%"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="level-left">
+                                    comment
+                                </div>
+                                <div class="field">
+                                    <p class="control">
+                            <textarea id="textarea-post" class="textarea"
+                                      placeholder="ex) 야경 맛집! ...etc"></textarea>
+                                    </p>
+                                </div>
+                                <nav class="level is-mobile">
+                                    <div class="level-left">
+
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="level-item">
+                                            <a class="button is-sparta" onclick="post()">posting</a>
+                                        </div>
+                                        <div class="level-item">
+                                            <a class="button is-sparta is-outlined"
+                                               onclick='$("#modal-post").removeClass("is-active")'>cancel</a>
+                                        </div>
+                                    </div>
+                                </nav>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close"
+                onclick='$("#modal-post").removeClass("is-active")'></button>
+    </div>
+</section>
+
+<!--본문-->
+<div id="card-columns" class="card-columns">
+    {% for post in posts %}
+        {% set post_id = post._id %}
+        {% set nickname = post.nickname %}
+        {% set title = post.title %}
+        {% set comment = post.comment %}
+        {% set img_file = post.img_file %}
+        <!--       <div class="card">
+            <img class="card-img-top" src="{{ url_for('static', filename='img/' + img_file) }}" alt="Card image cap">
+            <div class="card-body">
+                <div class="card-body__content-box">
+                    <p>제목</p>
+                    <p class="card-title">{{ post.title }}</p>
+                </div>
+                <div class="card-body__content-box">
+                    <p>작성자</p>
+                    <p class="card-text">{{ post.nickname }}</p>
+                </div>
+                <div class="card-body__content-box">
+                    <p>한줄소개</p>
+                    <p class="card-text">{{ post.comment }}</p>
+                </div>
+                <div class="buttons">
+                    <button class="button is-sparta" onclick="update('{{ post_id }}')">수정</button>
+                    <button class="button is-sparta is-outlined" onclick="deleteCard('{{ post_id }}')">삭제</button>
+                </div>
+            </div>
+        </div>-->
+        <div class="container">
+            <div class="card-deck">
+                <div class="card" *ngFor="let item of cards">
+                    <div class="embed-responsive embed-responsive-4by3">
+                        <img src="{{ url_for('static', filename='img/' + img_file) }}"
+                             class="card-img-top embed-responsive-item" alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <div class="media-left">
+                            <figure class="image is-48x48">
+                                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                            </figure>
+                        </div>
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <h5 class="card-subtitle mb-2 text-muted">@ {{ post.nickname }}</h5>
+                        <p class="card-text">{{ post.comment }}</p>
+                        <a href="#" class="card-link">수정하기</a>
+                        <a href="#" class="card-link" onclick="deleteCard('{{ post_id }}')">삭제하기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="modal" id="modal-post2">
+        <div class="modal-background" onclick='$("#modal-post2").removeClass("is-active")'></div>
+        <div class="modal-content">
+            <div class="box">
+                <div class="my-img">
+                    <div id="image-container" class="image-container">
+                        <img id="preview-image2"
+                             src="https://dummyimage.com/500x400/fff/000.png&text=preview+image">
+                    </div>
+                    <div class="control is-expanded">
+                        <div class="file has-name">
+                            <label class="file-label" style="width:100%">
+                                <input id="input-pic2" class="file-input" type="file" accept="image/*"
+                                       name="resume" onchange="setThumbnail2(this)">
+                                <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fa fa-upload"></i>
+                        </span>
+                        <span class="file-label">파일 선택</span>
+                    </span>
+                                <span id="file-name2" class="file-name" style="width:100%;max-width:100%"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <article class="place">
                     <div class="media-content">
+                        <div class="level-left">
+                            여행장소
+                        </div>
                         <div class="field">
                             <p class="control">
-                                        <textarea id="textarea-post" class="textarea"
-                                                  placeholder="무슨 생각을 하고 계신가요?"></textarea>
+                                <input id="post-title2" class="input is-normal" type="text"
+                                       placeholder="ex) 파리, 에펠탑 ... etc">
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <article class="media">
+                    <div class="media-content">
+                        <div class="level-left">
+                            내용
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                            <textarea id="textarea-post2" class="textarea"
+                                      placeholder="ex) 친구와 함께여서 즐거웠던 파리여행!"></textarea>
                             </p>
                         </div>
                         <nav class="level is-mobile">
@@ -81,11 +301,11 @@
                             </div>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <a class="button is-sparta" onclick="post()">포스팅하기</a>
+                                    <a class="button is-sparta" onclick="modifyCard()">수정하기</a>
                                 </div>
                                 <div class="level-item">
                                     <a class="button is-sparta is-outlined"
-                                       onclick='$("#modal-post").removeClass("is-active")'>취소</a>
+                                       onclick='$("#modal-post2").removeClass("is-active")'>취소</a>
                                 </div>
                             </div>
                         </nav>
@@ -94,54 +314,10 @@
             </div>
         </div>
         <button class="modal-close is-large" aria-label="close"
-                onclick='$("#modal-post").removeClass("is-active")'></button>
+                onclick='$("#modal-post2").removeClass("is-active")'></button>
     </div>
-</section>
 
-<!-- Card Post 출력 Section -->
-<section class="postsection">
-    <div id="post-box" class="container">
-        <div class="box">
-            <article class="media">
-                <div class="media-left">
-                    <a class="image is-64x64" href="#">
-                        <img class="is-rounded"
-                             src={{ url_for("static", filename="profile_pics/profile_placeholder.png") }} alt="Image">
-                    </a>
-                </div>
-                <div class="media-content">
-                    <div class="card">
-                        <div class="card-image">
-                            <figure class="image is-4by3">
-                                <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                            </figure>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <div class="media-left">
-                                    <figure class="image is-48x48">
-                                        <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
-                                    </figure>
-                                </div>
-                                <div class="media-content">
-                                    <p class="title is-4">John Smith</p>
-                                    <p class="subtitle is-6">@johnsmith</p>
-                                </div>
-                            </div>
-                            <div class="content">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                                <a href="#">#css</a> <a href="#">#responsive</a>
-                                <br>
-                                <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </div>
-</section>
+</div>
 
 </body>
 </html>
