@@ -50,15 +50,12 @@
     <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
 
     <script>
-
-
         // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
         function logout() {
             $.removeCookie('mytoken');
             alert('로그아웃!')
             window.location.href = '/login'
         }
-
     </script>
 
     <style>
@@ -73,40 +70,46 @@
             font-family: 'Gowun Batang', serif;
         }
     </style>
-
 </head>
 <body>
 <!-- header -->
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <!-- <img src="{{ url_for('static', filename='logo.png') }}"> -->
             <strong class="is-sparta"
-                    style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS</strong>
+                    style="font-family: 'Stylish', sans-serif; font-size: larger;">GAMBBAS</strong>
         </a>
     </div>
 </nav>
+
+<!-- tab -->
+<!-- 아래 hero 클래스와 위치 변경 (페이지 상단의 언더바 위치 동일화를 위해)
+, Home > 메인페이지로 이동
+, Profile > 프로필 페이지로 이동
+전종민 2021-11-05
+-->
+<div class="tabs is-right" style="margin-top: 15px;">
+    <ul>
+        <li class="is-active"><a href="/">Home</a></li>
+        <li><a href="/user/{{ user_info.username }}">Profile</a></li>
+        <li><a onclick="logout()">Logout</a></li>
+    </ul>
+</div>
+
 <section class="hero is-white">
     <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
         <h1 class="title is-sparta">감.빠.스</h1>
         <h3 class="subtitle is-sparta">감성에 빠지는 SPOT</h3>
     </div>
 </section>
-<!-- tab -->
-<div class="tabs is-right">
-    <ul>
-        <li class="is-active"><a>Home</a></li>
-        <li><a>{{ user_info.nickname }}</a></li>
-        <li><a onclick="logout()">Logout</a></li>
-    </ul>
-</div>
+
 <!-- posting input -->
 <section class="section">
     <article class="media">
         <figure class="media-left" style="align-self: center">
             <a class="image is-32x32" href="/user/{{ user_info.username }}">
-                <!-- <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
-            --></a>
+                <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+            </a>
         </figure>
         <div class="media-content">
             <div class="field">
@@ -232,7 +235,7 @@
                     <div class="card-body">
                         <div class="media-left">
                             <figure class="image is-48x48">
-                                <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                                <img src="{{ url_for('static', filename=user_info.profile_pic_real) }}" alt="Placeholder image">
                             </figure>
                         </div>
                         <h5 class="card-title">{{ post.title }}</h5>
@@ -316,8 +319,6 @@
         <button class="modal-close is-large" aria-label="close"
                 onclick='$("#modal-post2").removeClass("is-active")'></button>
     </div>
-
 </div>
-
 </body>
 </html>

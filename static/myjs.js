@@ -109,7 +109,6 @@ function toggle_like(post_id, type) {
     }
 }
 
-/*
 function get_posts(username) {
     if (username == undefined) {
         username = ""
@@ -137,7 +136,7 @@ function get_posts(username) {
                                         <div class="media">
                                           <div class="media-left">
                                             <a class="image is-64x64" href="/user/${post['username']}">
-                                                <img class="is-rounded" src="/static/${post['profile_pic_real']}" alt="Image">
+                                                <img class="is-rounded" src="/static/profile_pics/${post['profile_pic_real']}" alt="Image">
                                             </a>
                                           </div>
                                           <div class="media-content">
@@ -157,7 +156,7 @@ function get_posts(username) {
             }
         }
     })
-}*/
+}
 
 
 /*삭제*/

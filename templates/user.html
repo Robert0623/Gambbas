@@ -1,31 +1,53 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+    />
+
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!-- Google Font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+
     <!-- Webpage Title -->
-    <title>{{ user_info.name }} | GAMBBAS - 감성에 빠진 스팟</title>
+    <title>GAMBBAS - {{ user_info.username }}</title>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-    <meta property="og:title" content="GAMBBAS - 감성에 빠진 스팟"/>
-    <meta property="og:description" content="mini project for Web Plus"/>
-    <meta property="og:image" content="{{ url_for('static', filename='ogimg.png') }}"/>
-
     <!-- Bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
-    <!-- Font Awesome CSS -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <!-- mystyle.css 사용 -->
-    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
-
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <script src="{{ url_for('static', filename='myjs.js') }}"></script>
+
+    <!-- CSS -->
+    <link href="{{ url_for('static', filename='mystyle.css') }}" rel="stylesheet">
 
     <script>
         $(document).ready(function () {
@@ -67,29 +89,43 @@
 </head>
 
 <body class="has-navbar-fixed-top">
-
+<!-- header -->
 <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <a class="navbar-item" href="/">
-            <!-- <img src="{{ url_for('static', filename='logo.png') }}">   logo 이미지 주석처리  -->
             <strong class="is-sparta"
-                    style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS - 감성에 빠진 스팟</strong>
+                    style="font-family: 'Stylish', sans-serif;font-size: larger;">GAMBBAS</strong>
         </a>
     </div>
 </nav>
+
+<!-- tab -->
+<!--
+아래 hero 클래스와 위치 조절
+, Home > 메인페이지로 이동 및 class="is-active" 를 삭제하여 강조효과 제거
+, Profile > 프로필 페이지로 이동 및 class="is-active"를 통해 강조효과 표시
+전종민 2021-11-05
+-->
+<div class="tabs is-right" style="margin-top: 15px;">
+    <ul>
+        <li ><a href="/">Home</a></li>
+        <li class="is-active"><a href="/user/{{ user_info.username }}">Profile</a></li>
+        <li><a onclick="logout()">Logout</a></li>
+    </ul>
+</div>
 
 <section class="hero is-white">
     <div class="hero-body" style="padding-bottom:1rem;margin:auto;min-width: 400px">
         <article class="media">
             <figure class="media-left" style="align-self: center">
                 <a class="image is-96x96" href="#">
-                    <img class="is-rounded" src="{{ url_for('static', filename=user_info.profile_pic_real) }}">
+                    <img class="is-rounded" src="/static/{{ user_info.profile_pic_real }}">
                 </a>
             </figure>
             <div class="media-content">
                 <div class="content">
                     <p>
-                        <strong>{{ user_info.profile_name }}</strong> <small>@{{ user_info.username }}</small>
+                        <strong>{{ user_info.nickname }}</strong> <small>@{{ user_info.username }}</small>
                         <br>
                         {{ user_info.profile_info }}
                     </p>
@@ -117,31 +153,30 @@
                         <article class="media">
                             <div class="media-content">
                                 <div class="field">
-                                    <label class="label" for="input-name">이름</label>
+                                    <label class="label" for="input-name">Nickname</label>
 
                                     <p class="control">
 
                                         <input id="input-name" class="input"
-                                               placeholder="홍길동" value="{{ user_info.profile_name }}">
+                                               placeholder="Nickname" value="{{ user_info.profile_name }}">
                                     </p>
                                 </div>
                                 <div class="field">
-                                    <label class="label" for="input-pic">프로필 사진</label>
+                                    <label class="label" for="input-pic">Profile Pic</label>
 
                                     <div class="control is-expanded">
                                         <div class="file has-name">
                                             <label class="file-label" style="width:100%">
                                                 <input id="input-pic" class="file-input" type="file"
                                                        name="resume">
-                                                <span class="file-cta"><span class="file-icon"><i
-                                                        class="fa fa-upload"></i></span>
-                                <span class="file-label">파일 선택</span>
-                            </span>
+                                                <span class="file-cta">
+                                                    <span class="file-icon"><i class="fa fa-upload"></i></span>
+                                                    <span class="file-label">Select img</span>
+                                                </span>
                                                 <span id="file-name" class="file-name"
                                                       style="width:100%;max-width:100%">{{ user_info.profile_pic }}</span>
                                             </label>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="field">
