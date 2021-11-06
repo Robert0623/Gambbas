@@ -111,27 +111,37 @@ def check_name_dup():
 # DB에 정보 삽입
 @app.route('/posting', methods=['POST'])
 def posting():
+    # 토근 받기
     token_receive = request.cookies.get('mytoken')
+    # jwt 토큰이 유효한지 확인
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-    # 확인 필요한 부분
+    # 오늘 날짜
     today = datetime.now()
+    # 현재 날씨 및 시간
     mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
+    # POST 방식으로 전달되는 데이터 받기
     title_receive = request.form["title_give"]
     comment_receive = request.form["comment_give"]
     file = request.files["file_give"]
 
+    # username 하나씩 찾기
     user_info = db.users.find_one({"username": payload["id"]})
     nickname = user_info["nickname"]
     username = user_info["username"]
 
+    # 파일명을 '.' 기준으로 뒤쪽만 받기
     extension = file.filename.split(".")[-1]
 
+    # 파일명 뒤에 현재 날짜 및 시간 붙이기
     filename = f"file - {mytime}"
+    # 파일명 뒤에 확장자 넣기
     save_to = f"static/img/{filename}.{extension}"
+    # 파일 저장
     file.save(save_to)
 
+    # 문서 생성
     doc = {
         'img_file': f"{filename}.{extension}",
         'nickname': nickname,
@@ -139,21 +149,29 @@ def posting():
         'title': title_receive,
         'comment': comment_receive
     }
+    # 문서 삽입
     db.posts.insert_one(doc)
+    # 요청 성공 시 실행되는 메세지
     return jsonify({'msg': '업로드 완료!'})
 
-
+# 포스팅 요청 API
 @app.route("/get_posts", methods=['GET'])
 def get_posts():
+    # 토큰 받기
     token_receive = request.cookies.get('mytoken')
     try:
+        # jwt 토큰이 유효한지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         # 포스팅 목록 받아오기
         posts = list(db.posts.find({}))
         for post in posts:
+            # 문자열로 변경
             post["_id"] = str(post["_id"])
+        # 성공 시 실행되는 메세지
         return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", 'posts': posts})
+    # 예외처리하기
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        # url 재전송하기
         return redirect(url_for("home"))
 
 
@@ -164,21 +182,30 @@ def delete_card():
     token_receive = request.cookies.get('mytoken')
     # jwt토큰이 유효한지 확인
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    # 정보를 토대로 user_info 설정
+    # db에서 username 하나씩 찾기
     user_info = db.users.find_one({"username": payload["id"]})
+    # username 변수 선언
     username = user_info["username"]
 
+    # 변수 전달
     id_value_receive = request.form["id_value_give"]
+    # db posts에서 하나씩 찾기
     author_info = db.posts.find_one({"_id": ObjectId(id_value_receive)})
+    # id 변수 선언
     author_id = author_info["username"]
+    # 파일 이름 변수 선언
     file_name = author_info["img_file"]
 
     # username과 author_id가 같다면 ObjectId를 이용하여 file 삭제 그렇지 않다면 경고창
     if username == author_id:
+        # 조건 만족시 삭제
         db.posts.delete_one({"_id": ObjectId(id_value_receive)})
+        # 조건 만족시 이미지 파일 삭제
         os.remove("static/img/" + file_name)
+        # 조건 만족시 메시지 리턴
         return jsonify({"msg": "삭제완료!"})
     else:
+        # 조건 불충시 메세지 리턴
         return jsonify({"msg": "삭제 권한이 없습니다."})
 
 
@@ -207,32 +234,48 @@ def user(username):
 # 프로필 수정 서버
 @app.route('/update_profile', methods=['POST'])
 def save_img():
+    # 토큰을 받습니다.
     token_receive = request.cookies.get('mytoken')
+    # 토큰을 받은 뒤 아래 기능을 수행합니다.
     try:
+        # jwt 토큰이 유효한지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
+        # python 기본 함수인 datetime 을 사용해 저장되는 file 에 붙여 파일을 구분
         today = datetime.now()
         mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
+        # user.html 페이지에서 user.js - update_profile()을 수행 후 받아온 결과를 저장
+        # username 을 저장하여 받아온 file의 파일명 username으로 저장하도록 설정
         username = payload["id"]
         name_receive = request.form["name_give"]
         about_receive = request.form["about_give"]
+        # 변경하기위해 받아온 nickname 과 profile_info를 db에 저장
         new_doc = {
-            "nickname": name_receive,  # profile_name > nickname 으로 통합 (전종민 2021-11-05)
+            "nickname": name_receive,
             "profile_info": about_receive
         }
+        # 받은 파일이 있을 시 아래 기능을 수행
         if 'file_give' in request.files:
+            # 전달받은 파일을 file 에 저장
             file = request.files["file_give"]
+            # 업로드 된 파일이 안전한지 확인
             filename = secure_filename(file.filename)
+            # filename에서 . 없이 확장자만 추출
             extension = filename.split(".")[-1]
+            # filename에 datetime으로 만든 시간 추가
             filename = f"file - {mytime}"
+            # file 저장 경로 지정
             file_path = f"profile_pics/{username}.{extension}"
             file.save("./static/" + file_path)
+            # profile 사진의 이름과 경로를 doc에 저장
             new_doc["profile_pic"] = filename
             new_doc["profile_pic_real"] = file_path
         db.users.update_one({'username': payload['id']}, {'$set': new_doc})
         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+    # jwt 토큰이 유효하지 않을 때.
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        # home으로 돌아감
         return redirect(url_for("home"))
 
 
