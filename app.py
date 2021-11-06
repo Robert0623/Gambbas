@@ -17,27 +17,39 @@ SECRET_KEY = 'GAMBBAS'
 client = MongoClient('mongodb://3.36.109.166', 27017, username="test", password="test")
 db = client.dbgambbas
 
-
+# 페이지 접속시 로그인 여부 확인
 @app.route('/')
 def home():
+    # 쿠키로 부터 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
     try:
+        # jw토큰 로그인 정보 디코드
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+
+        # 현재 로그인 된 id와 일치하는 정보 가져오기
         user_info = db.users.find_one({"username": payload["id"]})
         posts = list(db.posts.find({}))
+
+        # 페이지 렌더링, db에서 가져온 로그인 정보, 영화 정보 index 페이지로 전달
         return render_template('index.html', user_info=user_info, posts=posts)
     except jwt.ExpiredSignatureError:
+
+        # 토큰 시간이 완료되면 로그인 페이지로 보냄 msg - 시간이 만료 되었습니다.
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
+
+        # 토큰이 존재하지 않다면 로그인 페이지로 보냄 msg - 정보가 존재하지 않습니다.
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
+# login 페이지
 @app.route('/login')
 def login():
     msg = request.args.get("msg")
     return render_template('login.html', msg=msg)
 
 
+# login server
 @app.route('/sign_in', methods=['POST'])
 def sign_in():
     # 로그인
@@ -136,7 +148,7 @@ def get_posts():
     token_receive = request.cookies.get('mytoken')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 포스팅 목록 받아오기(작성 순서 내림차순 20개)
+        # 포스팅 목록 받아오기
         posts = list(db.posts.find({}))
         for post in posts:
             post["_id"] = str(post["_id"])
@@ -148,8 +160,11 @@ def get_posts():
 # 포스팅 삭제
 @app.route("/deleteCard", methods=["DELETE"])
 def delete_card():
+    # 토큰을 받습니다.
     token_receive = request.cookies.get('mytoken')
+    # jwt토큰이 유효한지 확인
     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    # 정보를 토대로 user_info 설정
     user_info = db.users.find_one({"username": payload["id"]})
     username = user_info["username"]
 
@@ -158,6 +173,7 @@ def delete_card():
     author_id = author_info["username"]
     file_name = author_info["img_file"]
 
+    # username과 author_id가 같다면 ObjectId를 이용하여 file 삭제 그렇지 않다면 경고창
     if username == author_id:
         db.posts.delete_one({"_id": ObjectId(id_value_receive)})
         os.remove("static/img/" + file_name)
@@ -166,20 +182,25 @@ def delete_card():
         return jsonify({"msg": "삭제 권한이 없습니다."})
 
 
-# 프로필 확인 / 수정용 - index.html > href="/user/{{ user_info.username }}"
+# 프로필 확인 기능 - index.html 메인 페이지에서 개인 프로필로 페이지 이동 href="/user/{{ user_info.username }}"
 @app.route('/user/<username>')
 def user(username):
-    # 각 사용자의 프로필과 글을 모아볼 수 있는 공간
+    # 토큰을 받습니다.
     token_receive = request.cookies.get('mytoken')
+    # 토큰을 받은 뒤 아래 기능을 수행합니다.
     try:
+        # jwt 토큰이 유효한지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        status = (username == payload["id"])  # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
-
+        # 내 프로필이면 True, 다른 사람 프로필 페이지면 False
+        status = (username == payload["id"])
+        # DB에서 users - username 을 찾고 posts 에서 포스팅할 내용을 리스트로 저장
         user_info = db.users.find_one({"username": username}, {"_id": False})
         posts = list(db.posts.find({}))
-
+        # DB에서 가져온 자료를 user.html 페이지에 user_info, posts, status 로 전달
         return render_template('user.html', user_info=user_info, posts=posts, status=status)
+    # jwt 토큰이 유효하지 않을 때.
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        # home으로 돌아감.
         return redirect(url_for("home"))
 
 
