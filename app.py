@@ -14,14 +14,15 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'GAMBBAS'
 
-client = MongoClient('mongodb://3.36.109.166', 27017, username="test", password="test")
-db = client.dbgambbas
+client = MongoClient('mongodb://13.124.68.55', 27017, username="test", password="test")
+db = client.dbgambbas_test
 
 # 페이지 접속시 로그인 여부 확인
 @app.route('/')
 def home():
     # 쿠키로 부터 토큰 가져오기
     token_receive = request.cookies.get('mytoken')
+    # 토큰을 받은 뒤 아래 기능을 수행합니다.
     try:
         # jw토큰 로그인 정보 디코드
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -29,7 +30,7 @@ def home():
         # 현재 로그인 된 id와 일치하는 정보 가져오기
         user_info = db.users.find_one({"username": payload["id"]})
         posts = list(db.posts.find({}))
-
+        # DB에서 가져온 자료를 user.html 페이지에 user_info, posts, status 로 전달
         # 페이지 렌더링, db에서 가져온 로그인 정보, 영화 정보 index 페이지로 전달
         return render_template('index.html', user_info=user_info, posts=posts)
     except jwt.ExpiredSignatureError:
@@ -159,6 +160,7 @@ def posting():
 def get_posts():
     # 토큰 받기
     token_receive = request.cookies.get('mytoken')
+    # 토큰을 받은 뒤 아래 기능을 수행합니다.
     try:
         # jwt 토큰이 유효한지 확인
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -222,7 +224,7 @@ def user(username):
         status = (username == payload["id"])
         # DB에서 users - username 을 찾고 posts 에서 포스팅할 내용을 리스트로 저장
         user_info = db.users.find_one({"username": username}, {"_id": False})
-        posts = list(db.posts.find({}))
+        posts = list(db.posts.find({"username": username}))
         # DB에서 가져온 자료를 user.html 페이지에 user_info, posts, status 로 전달
         return render_template('user.html', user_info=user_info, posts=posts, status=status)
     # jwt 토큰이 유효하지 않을 때.
