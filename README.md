@@ -35,13 +35,11 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
 ## 📝 요구사항
+- JWT를 이용하여 로그인과 회원가입 구현
 - 아이디, 닉네임 중복확인
 - 비밀번호2차 확인
 - 프로필 닉네임, 이미지 수정
 - 게시물 업로드 및 삭제
-
-## 📜 핵심기능
-- JWT를 이용하여 로그인과 회원가입 구현
 
 ## 🤦🏻 프로젝트 중 힘들었던 점이 있다면
 - 프로젝트 첫 날 팀원 하차로 인한 인력 부족
